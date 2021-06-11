@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+
+{% block header %}
+<header class="py-5 bg-light border-bottom mb-4">
+  <div class="container">
+      <div class="text-center my-5">
+          <h1 class="fw-bolder">Welcome to  SprtBlog!</h1>
+          <p class="lead mb-0">A Bootstrap 5 starter layout for your next blog homepage</p>
+      </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+          {% for post in object_list %}
+          <div class="card w-90">
+            <div class="row g-0">
+              <div class="col-md-2 d-flex align-items-center justify-content-center">
+                {% if post.header_image.url != 0 %}
+                  <img src="{{ post.header_image.url }}" class="rounded-circle" width=100 height=100>
+                {% else %}
+                  <img src="{% static 'theblog/images/defaultheader.png' %}" class="rounded-circle" width=100 height=100>
+                {% endif %}
+              </div>
+              <div class="col-md-10">
+                <div class="card-body">
+                  <h5 class="card-title"><a href="{% url 'article-detail' post.pk %}" style="text-decoration:none;color:black;">{{post.title}}</a></h5>
+                  <i class="icon-calendar mr-2 text-muted"> {{ post.post_date }}</i>
+                  <i class="fa fa-folder"><a href="{% url 'category' post.category|slugify %}" style="text-decoration:none;"> {{ post.category }}</a></i>
+                  <i class="icon-user mr-2"><a href="{% url 'show_profile_page' post.author.profile.id %}" style="text-decoration:none;"> {{post.author.first_name}} {{post.author.last_name}}</a></i>
+                  <p class="card-text">{{ post.snippet }}</p>
+                  <p class="card-text"><a href="{% url 'article-detail' post.pk %}" style="text-decoration:none;">Read More</a>
+                    {% if user.is_authenticated %}
+                      {% if user.id == post.author.id %}
+                        <a href="{% url 'update_post' post.pk %}" style="text-decoration:none;">Edit</a>
+                        <a href="{% url 'delete_post' post.pk %}" style="text-decoration:none;">Delete</a></p>
+                      {% endif %}
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <br/>
+          {% endfor %}
+{% endblock %}
+            <!-- {% for post in object_list %}
+                <li><a href="{% url 'article-detail' post.pk %}">{{ post.title }}</a>-
+                    <a href="{% url 'category' post.category|slugify %}">{{post.category }}</a> - {{ post.author.first_name }} {{ post.author.last_name }} - {{ post.post_date }}
+                    {% if user.is_authenticated %}
+                        {% if user.id == post.author.id %}
+                            <small><a href="{% url 'update_post' post.pk %}">(Edit)</a>
+                            <a href="{% url 'delete_post' post.pk %}">(Delete)</a></small>
+                        {% endif %}
+                    {% endif %}
+                    <br/>
+                    {{ post.snippet }}
+                    
+                </li>
+            
+            {% endfor %} -->    
+  {% block sidecontent %}
+        <div class="card mb-4">
+          <div class="card-header">Search</div>
+          <div class="card-body">
+              <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search">
+                  <button class="btn btn-primary" id="button-search" type="button">Go!</button>
+              </div>
+          </div>
+          </div>
+    <script src="https://apps.elfsight.com/p/platform.js" defer></script>
+    <div class="elfsight-app-1540fbac-f606-4e39-8a1d-3df5c740e73d"></div>
+          
+        <h3><a href="{% url 'category_list' %}" style="text-decoration:none;color:black;">Category</a></h3>
+        <ul class="list-group list-group-flush">
+          {% for item in cat_menu %}
+          <li class="list-group-item"><a href="{% url 'category' item|slugify %}" style="text-decoration:none;color:black;">{{ item }}</a></li>
+          <!-- <li class="list-group-item">A second item</li>
+          <li class="list-group-item">A third item</li>
+          <li class="list-group-item">A fourth item</li>
+          <li class="list-group-item">And a fifth one</li> -->
+          {% endfor %}
+        </ul>
+
+        
+
+        
+
+        
+        
+  {% endblock %}
+
+

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+Comment On Blog Post
+{% endblock %}
+
+{% block content %}
+ 
+    <h1>Add Comment</h1>
+    <br>
+    <div class="mb-3">
+
+        <form method="POST">
+            {% csrf_token %}
+            <!--Sintax dibawah buat bikin form yang ada di model secara automatis, bisa dilihat dengan klik kanan lalu page source-->
+            <!--ass_p itu maksudnya adalah menampilkan form dengan tag <p> bisa juga dengan yg lain misalnya list berarti <ul> as_ul-->
+                {{ form.media }} 
+                {{ form.as_p }} 
+            <button type="" class="btn btn-secondary">Add Comment</button>
+        </form>
+    </div>
+
+
+{% endblock %}

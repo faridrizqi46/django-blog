@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create A New Profile Page
+{% endblock %}
+
+{% block content %}
+ 
+{% if user.is_authenticated %}
+    <h1>Create Profile Page</h1>
+    <br>
+    <div class="mb-3">
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!--Sintax dibawah buat bikin form yang ada di model secara automatis, bisa dilihat dengan klik kanan lalu page source-->
+            <!--ass_p itu maksudnya adalah menampilkan form dengan tag <p> bisa juga dengan yg lain misalnya list berarti <ul> as_ul-->
+
+                {{ form.as_p }} 
+            <button type="" class="btn btn-secondary">Create Profile Page</button>
+        </form>
+    </div>
+    
+{% else %}
+Who Are You ???
+{% endif %}
+
+
+{% endblock %}

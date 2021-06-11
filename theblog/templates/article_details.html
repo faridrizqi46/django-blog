@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+{{ post.title_tag }}
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ post.title }}</h1>
+<small>Created : {{ post.post_date }} | </small>
+<small>Author : <a href="{% url 'show_profile_page' post.author.profile.id %}"}>{{ post.author.first_name }} {{ post.author.last_name }}</a></small>
+<hr>
+<br/>
+<div class="d-flex align-items-center justify-content-center">
+{% if post.header_image %}
+    <img src="{{ post.header_image.url }}" height=250 width=600 class="img-fluid" alt="Responsive image">
+{% else %}
+    <img src="{% static 'theblog/images/defaultheaderbanner.jpg' %}" width=600 height=250 class="img-fluid" alt="Responsive image">
+{% endif %}
+</div>
+  <br>
+{{ post.body|safe }} <!--Ini safe biar bisa make html di textareanya-->
+
+<br/><br/>
+<p><a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+{% if user.is_authenticated %}
+    {% if user.id == post.author.id %}
+        <a href="{% url 'update_post' post.pk %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'delete_post' post.pk %}" class="btn btn-danger">Delete</a>
+    {% endif %}
+{% endif %}
+</p>
+<hr>
+
+<br/>
+<form action="{% url 'like_post' post.pk %}" method="POST">
+    {%  csrf_token %}
+    {% if user.is_authenticated %}
+        {% if liked %}
+            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-danger btn-sm">Unlike</button>
+        {% else %} 
+            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary btn-sm">Like</button> 
+        {% endif %}
+    {% else %}
+        Must be <a href="{% url 'login' %}">logged in</a> to like this post 
+            
+    {% endif %}
+    <br>{{ total_likes }} Likes
+</form>
+
+  <br><br/>
+  <h2>Comments...</h2>
+  <br/>
+    {% for comment in post.comments.all %}
+      <strong>{{ comment.name }}
+      ({{ comment.date_added }})</strong>
+      <br/>
+      {{ comment.body }}
+      <br/>
+      <hr>
+    {% endfor %}
+  <form method="POST">
+    {% csrf_token %}
+        {{ form.media }} 
+        {{ form.as_p }} 
+    <button type="" class="btn btn-secondary">Add Comment</button>
+</form>
+
+
+{% endblock %}
+
+{% block sidecontent %}
+<br><br><br><br>
+<div class="card text-center">
+  <div class="card-header">
+    About Author
+  </div>
+  <div class="card-body">
+    <div class="row g-0">
+      <div class="col-md-4">
+        {% if post.author.profile.profile_pic.url %}
+          <img src="{{ post.author.profile.profile_pic.url }}" width=150 height=150>
+        {% else %}
+          <img src="{% static 'theblog/images/defaultpic.jpg' %}" width=150 height=200>
+        {% endif %}
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{ post.author.first_name }} {{ post.author.last_name }}</h5>
+          <p class="small text-muted">
+              {% if post.author.profile.instagram %}
+                <a href="{{ post.author.profile.instagram }}" style="text-decoration:none;color:black;" target="_blank"><i class="icon-instagram mr-2"></i></a>
+              {% endif %} 
+               
+              {% if post.author.profile.github %}
+              <a href="{{ post.author.profile.github }}" style="text-decoration:none;color:black;" target="_blank"><i class="icon-github mr-2"> </i> </a>
+              {% endif %}
+               
+              {% if post.author.profile.linkedin %}
+              <a href="{{ post.author.profile.linkedin }}" style="text-decoration:none;color:black;" target="_blank"><i class="icon-linkedin mr-2"> </i> </a>
+              {% endif %}
+          <p class="card-text"> {{ post.author.profile.bio|truncatechars:18 }}</p>
+          <a href="{% url 'show_profile_page' post.author.profile.id %}">Visit Profile Page</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="card text-center">
+  <div class="card-header">
+    New Post
+  </div>
+  {% for post in new_post %}
+          <div class="card w-90">
+            <div class="row g-0">
+              <div class="col-md-3 d-flex align-items-center justify-content-center">
+                {% if post.header_image.url != 0 %}
+                  <img src="{{ post.header_image.url }}" class="rounded-circle" width=70 height=70>
+                {% else %}
+                  <img src="{% static 'theblog/images/defaultheader.png' %}" class="rounded-circle" width=50 height=50>
+                {% endif %}
+              </div>
+              <div class="col-md-9">
+                <div class="card-body text-start">
+                  <h5 class="card-title"><a href="{% url 'article-detail' post.pk %}" style="text-decoration:none;color:black;">{{post.title}}</a></h5>
+                  <p class="card-text">{{ post.snippet|truncatechars:35 }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+</div>
+{% endblock %}

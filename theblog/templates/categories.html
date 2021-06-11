@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+
+{% block content %}
+    {% if category_post %}
+            
+        <h1>{{ cats }} - Category</h1>
+
+        <ul>
+            {% for post in category_post %}
+            <div class="card w-90">
+                <div class="row g-0">
+                  <div class="col-md-2 d-flex align-items-center justify-content-center">
+                    {% if post.header_image.url != 0 %}
+                      <img src="{{ post.header_image.url }}" class="rounded-circle" width=100 height=100>
+                    {% else %}
+                      <img src="{% static 'theblog/images/defaultheader.png' %}" class="rounded-circle" width=100 height=100>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-10">
+                    <div class="card-body">
+                      <h5 class="card-title"><a href="{% url 'article-detail' post.pk %}" style="text-decoration:none;color:black;">{{post.title}}</a></h5>
+                      <i class="icon-calendar mr-2 text-muted"> {{ post.post_date }}</i>
+                      <i class="fa fa-folder"><a href="{% url 'category' post.category|slugify %}" style="text-decoration:none;"> {{ post.category }}</a></i>
+                      <i class="icon-user mr-2"><a href="{% url 'show_profile_page' post.author.profile.id %}" style="text-decoration:none;"> {{post.author.first_name}} {{post.author.last_name}}</a></i>
+                      <p class="card-text">{{ post.snippet }}</p>
+                      <p class="card-text"><a href="{% url 'article-detail' post.pk %}" style="text-decoration:none;">Read More</a>
+                        {% if user.is_authenticated %}
+                          {% if user.id == post.author.id %}
+                            <a href="{% url 'update_post' post.pk %}" style="text-decoration:none;">Edit</a>
+                            <a href="{% url 'delete_post' post.pk %}" style="text-decoration:none;">Delete</a></p>
+                          {% endif %}
+                        {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br/>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h2>Sorry This Page Does Not Exist</h2>
+    {% endif %}
+
+{% endblock %}

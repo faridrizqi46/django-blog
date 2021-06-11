@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Edit Blog Post
+{% endblock %}
+
+{% block head %}
+<script src="https://cdn.tiny.cloud/1/cykfqlnbm3bs4nn5n44xjeefkdembjhcvlxzatiqttcq2hii/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="{% static 'theblog/js/config.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+    {% if user.id == post.author.id %}
+        <h1>Update Post</h1>
+        <br>
+        <div class="mb-3">
+
+            <form method="POST">
+                {% csrf_token %}
+                <!--Sintax dibawah buat bikin form yang ada di model secara automatis, bisa dilihat dengan klik kanan lalu page source-->
+                <!--ass_p itu maksudnya adalah menampilkan form dengan tag <p> bisa juga dengan yg lain misalnya list berarti <ul> as_ul-->
+                    {{ form.media }} 
+                    {{ form.as_p }} 
+                <button type="" class="btn btn-secondary">Update</button>
+            </form>
+        </div>
+    {% else %}
+        Who Are You ???
+    {% endif %}
+{% else %}
+Who Are You ???
+
+{% endif %}
+
+
+{% endblock %}
